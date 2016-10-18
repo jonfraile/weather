@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    
+    <!--  Hojas de estilo  -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- cargar jquery desde cdn -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    
+    
+    
+</head>
+<body class="bg_blue">
+   
+   <h1 class="titulo" id="head">Weather</h1>
+   
+   <div>
+       <input type="text" value="" id="busqueda" name="busqueda" placeholder="Escribe una ciudad"/>
+       
+       <input type="button" value="Buscar" id="bt_busqueda"/>
+   </div>
+   
+   <h3 id="ciudad">Loading</h3>
+   <p id="descripcion">Ni frio ni calor</p>
+   <p id="temperatura">0</p>
+    
+   <script>
+		//ejecutar cuando todo el HTML este cargado
+		$(function() {
+			console.info("Ready 4 Play")
+			getWeather("Bilbao");
+
+			//detectar click en botton
+			$("#bt_busqueda").click(function() {
+				var texto_buscar = $("#busqueda").val();
+				console.debug("click " + texto_buscar);
+				getWeather(texto_buscar);
+			});
+
+		});
+
+		/**
+		 * 
+		 */
+		function getWeather(ciudad) {
+			console.debug("llamando al servicio Weather para " + ciudad);
+			var url = "http://api.openweathermap.org/data/2.5/weather?q=";
+			var APIKEY = "&appid=4ee841cfbd26ba9d323591e315799f67"
+
+			var promise = $.getJSON(url + ciudad + APIKEY);
+
+			promise.done(function(data) {
+				$("#ciudad").text(data.name);
+				$("#descripcion").text(data.weather[0].description);
+				$("#temperatura").text((data.main.temp - 273) + "ºC");
+			});
+
+			promise.fail(function() {
+				console.error("Error llamando al servicio");
+				$("#ciudad").text("XXXXX");
+				$("#descripcion").text("");
+				$("#temperatura").text("X");
+			});
+
+			promise.always(function() {
+				console.debug("Se ejecuta siempre falle o no");
+			});
+
+		}
+
+	</script>
+    
+</body>
+</html>
